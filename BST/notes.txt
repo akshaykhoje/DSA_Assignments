@@ -1,0 +1,70 @@
+1. Trees : 
+  A tree is a data structure similar to a linked list but instead of each node pointing simply to the
+next node in a linear fashion, each node points to a number of nodes. Tree is an example of a non-
+linear data structure. A tree structure is a way of representing the hierarchical nature of a structure
+in a graphical form.
+
+depth and height of a tree are the same
+
+2. Binary trees :
+  A tree is called a binary tree if each node has zero one or two childre. Empty tree is also a valid binary.
+
+3. Strict binary tree :
+  A binary tree is called strict binary if each node has exactly two or zero children.
+
+4. FULL BINARY TREE : 
+  A binary tree is called full binary tree if each node has exactly two children and all leaf nodes are at the same level.
+
+5. COMPLETE BINARY TREE :
+  For a binary tree of height h, if all the leaf nodes are at the height of either h or h-1, then it is called a complete binary tree.
+
+6. PROPERTIES OF BINARY TREES : 
+  a) The number of nodes n in a full binary tree is 2**(h+1) -1, where h is the number of levels in the tree.
+  b) 2**h  <=  number of nodes n  <=  2**(h+1) -1 
+  c) Number of leaf nodes in a FULL binary tree is 2**h 
+  d) Number of NULL links in a complete binary tree of n nodes is (n+1).
+  e) Minimum possible height or depth for n nodes is log(n+1,2)
+  
+7. EXPRESSION TREE :
+  A tree representing an expression tree is called an expression tree.
+  Leaf nodes are operands.
+  non-leaf nodes are operators(internal).
+  Expression trees are binary trees.
+
+
+8. BINARY SEARCH TREES :
+  In a BST, all the left subtree elements are less than root data and all the right subtree elements are greater than root data.
+  Both left and right subtrees should also be BSTs.
+
+  Inorder traversal gives a sorted list of data for a BST.
+
+  If X, a node in BST, has a two children, then
+    INORDER predecessor : maximum value in its left subtree
+    INORDER successor   : mimimum value in its right subtree
+
+
+  TIME COMPLEXITIES:  
+
+  O(logn) for accessing, searching, inserting and deleting a node
+
+  O(n) ..worst case  for all the above operations
+
+  a) Searching an element :
+    time -> O(logn)
+      worst case - O(n) when BST is a skew tree
+    space -> O(n) for recursive stack
+    space -> O(1) for non-recursive algo
+  
+  b) Finding minimum/maximum element :
+    time -> O(logn)
+      worst case - O(n) when BST is a skew tree
+    space -> O(n) for recursive stack
+    space -> O(1) for non-recursive algo
+
+  c) Insertion :
+    time -> O(logn)
+      worst case -O(n)
+    space -> O(n) for recursive stack, O(1) for non-recursive
+
+
+

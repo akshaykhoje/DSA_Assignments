@@ -1,0 +1,46 @@
+
+int findparent(int num,int* unionarr){
+    return unionarr[num];
+}
+void makeparentsame(int i,int j,int* unionarr,int v){
+    for(int k=0;k<v;k++){
+        if(unionarr[k]==i) unionarr[k]=j;
+    }
+}
+
+edge* Kruskal(graph* g){
+    int v=g->vertex;
+    edge* edges=(edge*)malloc(sizeof(edge)*(v-1));
+    heap h;
+    edge e;
+    int count=0;
+    init_heap(&h,100);
+    for(int i=0;i<v;i++){
+        ll* temp=g->graph[i];
+        while(temp){
+            e.s=i;
+            e.d=temp->vertex;
+            e.w=temp->weight;
+            insert_heap(&h,e);
+            temp=temp->next;
+        }
+    }
+    int unionarr[v];
+    for(int i=0;i<v;i++){
+       unionarr[i]=i;
+    }
+    while(!isempty(&h)){
+        edge heaptop=h.arr[0];
+        delete_heap(&h);
+        int start=heaptop.s;
+        int end=heaptop.d;
+        int weight=heaptop.w;
+        int parent1=findparent(start,unionarr);
+        int parent2=findparent(end,unionarr);
+        if(parent1==parent2)
+           continue;
+        edges[count++]=heaptop;
+        makeparentsame(parent1,parent2,unionarr,v);    
+    }
+    return edges;
+}
