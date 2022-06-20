@@ -1,19 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "sparse.h"
+void createmat(sparse **m, node **r, node **c, int rw_n, int cl_n, int data);
 
-void init(sparse *s, char *filename)
+void getmatrix(sparse **curr, int r, int c)
 {
-
-    FILE *fp = fopen(filename, "r");
-    if (!fp)
-    {
-        printf("Unable to open the file\n");
-        return;
-    }
-
-    fscanf(fp, "%d", &s->rw);
-    fscanf(fp, "%d", &s->cl);
+    sparse *s = *curr;
+    s->rw = r;
+    s->cl = c;
     s->row = (node **)malloc(sizeof(node *) * (s->rw));
     s->col = (node **)malloc(sizeof(node *) * (s->cl));
 
@@ -25,11 +19,38 @@ void init(sparse *s, char *filename)
     {
         s->col[i] = NULL;
     }
+}
+
+void init(sparse *s, char *filename)
+{
+
+    FILE *fp = fopen(filename, "r");
+    if (!fp)
+    {
+        printf("Unable to open the file\n");
+        return;
+    }
+    int r, c;
+    fscanf(fp, "%d", &r);
+    fscanf(fp, "%d", &c);
+    getmatrix(&s, r, c);
+    /*s->row = (node **)malloc(sizeof(node *) * (s->rw));
+    s->col = (node **)malloc(sizeof(node *) * (s->cl));
+
+    for (int i = 0; i < s->rw; i++)
+    {
+        s->row[i] = NULL;
+    }
+    for (int i = 0; i < s->cl; i++)
+    {
+        s->col[i] = NULL;
+    }*/
     printf("succesfull initalization:\n");
     // sparse* curr=s;
     node *curr = s->row[0];
     node *docur = s->col[0];
-    for (int i = 0; i < s->rw; i++)
+    
+    for (int i = 0; i < s->rw; i++)//inserting non-zero values in rows
     {
         curr = s->row[i];
         for (int j = 0; j < s->cl; j++)
@@ -40,39 +61,7 @@ void init(sparse *s, char *filename)
             // printf("%d ",x);
             if (x)
             {
-                node *newnode = (node *)malloc(sizeof(node));
-                newnode->row = i;
-                newnode->col = j;
-                newnode->value = x;
-                newnode->right = newnode->down = NULL;
-                if (curr == NULL)
-                {
-                    s->row[i] = newnode;
-                    curr = s->row[i];
-                }
-                else
-                {
-                    while (curr->right != NULL)
-                    {
-                        curr = curr->right;
-                    }
-                    curr->right = newnode;
-                }
-
-                if (docur == NULL)
-                {
-                    s->col[j] = newnode;
-                    // docur=newnode;
-                    docur = s->col[j];
-                }
-                else
-                {
-                    while (docur->down != NULL)
-                    {
-                        docur = docur->down;
-                    }
-                    docur->down = newnode;
-                }
+                createmat(&s, &curr, &docur, i, j, x);      
             }
         }
         // printf("\n");
@@ -86,6 +75,52 @@ void init(sparse *s, char *filename)
     //         p=p->right;
     //     }
     // }
+}
+
+void createmat(sparse **m, node **r, node **c, int rw_n, int cl_n, int data)
+{
+    // formation ofnew matrix
+    sparse *m3 = *m;
+    node *rm = *r;
+    node *cm = *c;
+    node *newnode = (node *)malloc(sizeof(node));
+    newnode->row = rw_n;
+    newnode->col = cl_n;
+    newnode->value = data;
+    newnode->right = newnode->down = NULL;
+
+    if (rm == NULL)
+    {
+        m3->row[rw_n] = newnode;     
+        rm = m3->row[rw_n];
+    }
+    else
+    {
+        while (rm->right != NULL)   //traversing till the end of the row
+        {
+            rm = rm->right;
+        }
+        rm->right = newnode;
+    }
+
+    // inserting in a column
+    if (cm == NULL)
+    {
+        m3->col[cl_n] = newnode;
+        // docur=newnode;
+        cm = m3->col[cl_n];
+    }
+    else
+    {
+        while (cm->down != NULL)
+        {
+            cm = cm->down;
+        }
+        cm->down = newnode;
+    }
+    *m = m3;
+    *r = rm;
+    *c = cm;
 }
 
 sparse *sparseadd(sparse *m1, sparse *m2)
@@ -108,32 +143,17 @@ sparse *sparseadd(sparse *m1, sparse *m2)
     //
     sparse *m3;
     m3 = (sparse *)malloc(sizeof(sparse));
-    m3->cl = m1->cl;
-    m3->rw = m1->rw;
-    // printf("row value is %d\n", m3->rw);
-    // printf("column value is %d\n", m3->cl);
-
-    m3->row = (node **)malloc(sizeof(node *) * m3->rw);
-    m3->col = (node **)malloc(sizeof(node *) * m3->cl);
-
-    for (int i = 0; i < m3->rw; i++)
-    {
-        m3->row[i] = NULL;
-    }
-    for (int i = 0; i < m3->cl; i++)
-    {
-        m3->col[i] = NULL;
-    }
+    getmatrix(&m3, m1->rw, m1->cl);
     node *rm;
     node *cm;
 
     node *p1, *p2, *q1, *q2;
-    for (int i = 0; i < m1->rw; i++)
+    for (int i = 0; i < m1->rw; i++)     //iterating rows
     {
         p1 = m1->row[i];
         p2 = m2->row[i];
         rm = m3->row[i];
-        for (int j = 0; j < m1->cl; j++)
+        for (int j = 0; j < m1->cl; j++)       //iterating columns
         {
             int data, rw_n, cl_n;
 
@@ -184,41 +204,7 @@ sparse *sparseadd(sparse *m1, sparse *m2)
                     // printf("%d ", p2->value);
                     p2 = p2->right;
                 }
-
-                // formation ofnew matrix
-                node *newnode = (node *)malloc(sizeof(node));
-                newnode->row = rw_n;
-                newnode->col = cl_n;
-                newnode->value = data;
-                newnode->right = newnode->down = NULL;
-                if (rm == NULL)
-                {
-                    m3->row[i] = newnode;
-                    rm = m3->row[i];
-                }
-                else
-                {
-                    while (rm->right != NULL)
-                    {
-                        rm = rm->right;
-                    }
-                    rm->right = newnode;
-                }
-
-                if (cm == NULL)
-                {
-                    m3->col[j] = newnode;
-                    // docur=newnode;
-                    cm = m3->col[j];
-                }
-                else
-                {
-                    while (cm->down != NULL)
-                    {
-                        cm = cm->down;
-                    }
-                    cm->down = newnode;
-                }
+                createmat(&m3, &rm, &cm, rw_n, cl_n, data);
             }
         }
     }
@@ -273,11 +259,11 @@ void printmat(sparse *m)
 //  sum =sum+a[i][j]*b[j][i] iterate it for number of columns of first matrix
 //
 
-void multimatrices(sparse *m1, sparse *m2)
+sparse *multimatrices(sparse *m1, sparse *m2)
 {
     if (!m1 || !m2)
     {
-        return;
+        return NULL;
     }
     sparse *curr1, *curr2;
     curr1 = m1;
@@ -285,16 +271,22 @@ void multimatrices(sparse *m1, sparse *m2)
     if (curr1->cl != curr2->rw)
     {
         printf("Invalid matrix multiplication\n");
-        return;
+        return NULL;
     }
+    sparse *m3 = (sparse *)malloc(sizeof(sparse));
+    getmatrix(&m3, curr1->rw, curr2->cl);
     node *p, *q;
+    node *rm;
+    node *cm;
     for (int i = 0; i < curr1->rw; i++)
     {
         // p=curr1->row[i];
+        rm = m3->row[i];
         for (int j = 0; j < curr2->cl; j++)
         {
-            q = curr2->col[j];
             p = curr1->row[i];
+            q = curr2->col[j];
+            cm = m3->col[j];
             int sum = 0;
             for (int k = 0; k < curr2->rw; k++)
             {
@@ -324,8 +316,80 @@ void multimatrices(sparse *m1, sparse *m2)
                 }
             }
             // printf("ith %d jth %d %d\n",i,j,sum);
-            printf(" %d ", sum);
+            // printf(" %d ", sum);
+            if (sum)
+            {
+                createmat(&m3, &rm, &cm, i, j, sum);
+            }
         }
-        printf("\n");
+        // printf("\n");
     }
+    // printmat(m3);
+    return m3;
+}
+
+sparse *transpose(sparse *m1)
+{
+    if (!m1)
+    {
+        return NULL;
+    }
+    int r = m1->rw;
+    int c = m1->cl;
+    sparse *m3;
+    m3 = (sparse *)malloc(sizeof(sparse));
+    getmatrix(&m3, c, r);
+    node *p, *q;
+    node *rm, *cm;
+    for (int i = 0; i < r; i++)
+    {
+        p = m1->row[i];
+        if (p)
+            rm = m3->col[p->row];
+        else
+            continue;
+        for (int j = 0; j < c; j++)
+        {
+            if (p)
+            {
+                cm = m3->row[p->col];
+                node *newnode = (node *)malloc(sizeof(node));
+                newnode->col = p->row;
+                newnode->row = p->col;
+                newnode->value = p->value;
+                if (!cm)
+                {
+                    m3->row[p->col] = newnode;
+                }
+                else
+                {
+                    while (cm->right != NULL)
+                    {
+                        cm = cm->right;
+                    }
+                    cm->right = newnode;
+                }
+
+                if (!rm)
+                {
+                    m3->col[p->row] = newnode;
+                }
+                else
+                {
+                    while (rm->down != NULL)
+                    {
+                        rm = rm->down;
+                    }
+                    rm->down = newnode;
+                }
+
+                p = p->right;
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+    return m3;
 }
