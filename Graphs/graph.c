@@ -8,7 +8,6 @@ int min_distance(int *visited, int *cost, int n); // utility function for Dijkas
 void print_shortest_distance(int n, int *arr);
 void DFS_repetitive(graph g, int n, int *visited);
 
-
 void init_graph(graph *g, char *file)
 {
   FILE *fptr;
@@ -55,9 +54,7 @@ void init_graph(graph *g, char *file)
   }
   fclose(fptr);
   return;
-  return;
 }
-
 
 void display_list(graph g)
 {
@@ -77,6 +74,32 @@ void display_list(graph g)
   return;
 }
 
+void DisplayMatrix(graph g)
+{
+  node *p = NULL;
+  int k;
+  printf("\n");
+  for (int i = 0; i < g.n; i++)
+  {
+    k = 0;
+    p = g.A[i];
+    while (k < g.n)
+    {
+      if (p && p->toNode == k)
+      {
+        printf("%d ", p->weight);
+        p = p->next;
+      }
+      else
+      {
+        printf("0 ");
+      }
+      k++;
+    }
+    printf("\n");
+  }
+  printf("\n");
+}
 
 void BFS(graph g, int n)
 {
@@ -243,22 +266,22 @@ edge *PrimsMST(graph g, int n)
   int minweight;
   visited[n] = 1;
   node *p = NULL;
-  for (int i = 0; i < g.n - 1; i++)       
+  for (int i = 0; i < g.n - 1; i++)
   {
     minweight = INT_MAX;
     edge minedge;
-    //comparing minimum weights between every edge j and t
+    // comparing minimum weights between every node j and t
     for (int j = 0; j < g.n; j++)
     {
-      p = g.A[j];         
-      if (visited[j] != 0)     //if jth node is not visited
+      p = g.A[j];
+      if (visited[j] != 0) // if jth node is not visited
       {
-        while (p)        
+        while (p)
         {
-          int t = p->toNode;      
-          if (visited[t] == 0)       //if tth node is not visited
+          int t = p->toNode;
+          if (visited[t] == 0) // if tth node is not visited
           {
-            if (p->weight < minweight)       // if requirement of minweight satisfied, add it to the minweight array named edges
+            if (p->weight < minweight) // if requirement of minweight satisfied, add it to the minweight array named edges
             {
               minweight = p->weight;
               minedge.start = j;
@@ -270,22 +293,21 @@ edge *PrimsMST(graph g, int n)
         }
       }
     }
-    visited[minedge.dest] = 1;         
-    edges[i] = minedge;       //adding entry to the minimum-weight edge
+    visited[minedge.dest] = 1;
+    edges[i] = minedge; // adding entry to the minimum-weight edge
   }
   return edges;
 }
 
-
 // Dijkstra's algorithm
 
-int min_distance(int *visited, int *cost, int n)  //parsing through all the edges and returning the min_cost index
+int min_distance(int *visited, int *cost, int n) // parsing through all the edges and returning the min_cost index
 {
   int min_index;
-  int min = INT_MAX; 
-  for (int i = 0; i < n - 1; i++)        //observe the worst case going to O(n**2)
+  int min = INT_MAX;
+  for (int i = 0; i < n - 1; i++) // observe the worst case going to O(n**2)
   {
-    for (int j = 0; j < n; j++)       
+    for (int j = 0; j < n; j++)
     {
       if (visited[j] == 0 && cost[j] < min)
       {
@@ -321,34 +343,34 @@ void Dijkstra(graph g, int start)
     return;
   }
 
-  int *visited = (int *)calloc(g.n, sizeof(int));   //keep track of whether a node is visited or not
-  int *cost = (int *)calloc(g.n, sizeof(int));      //hold minimum cost path
-  node *p = g.A[start];                  
+  int *visited = (int *)calloc(g.n, sizeof(int)); // keep track of whether a node is visited or not
+  int *cost = (int *)calloc(g.n, sizeof(int));    // hold minimum cost path
+  node *p = g.A[start];
 
-  for (int i = 0; i < g.n; i++)     //make all costs initially infinity
+  for (int i = 0; i < g.n; i++) // make all costs initially infinity
     cost[i] = INT_MAX;
 
-  while (p)       
+  while (p)
   {
     int i = p->toNode;
-    cost[i] = p->weight;         // here, holds the 'weights of all directly reachable nodes from the start node'
+    cost[i] = p->weight; // here, holds the 'weights of all directly reachable nodes from the start node'
     p = p->next;
   }
 
-  visited[start] = 1;              //self
-  cost[start] = 0;                 //self 
+  visited[start] = 1; // self
+  cost[start] = 0;    // self
 
   int u;
   for (int i = 0; i < g.n; i++)
   {
-    u = min_distance(visited, cost, g.n);         // u is the index of node to which min_distance from current node is found
+    u = min_distance(visited, cost, g.n); // u is the index of node to which min_distance from current node is found
     visited[u] = 1;
     node *p = NULL;
     p = g.A[u];
     while (p)
     {
       int j = p->toNode;
-      if (visited[j] == 0 && (cost[u] + p->weight) < cost[j] )     //relaxation step
+      if (visited[j] == 0 && (cost[u] + p->weight) < cost[j]) // relaxation step
       {
         cost[j] = cost[u] + p->weight;
       }
@@ -359,7 +381,6 @@ void Dijkstra(graph g, int start)
   print_shortest_distance(g.n, cost);
   return;
 }
-
 
 void driver(char *file)
 {
@@ -391,5 +412,7 @@ void driver(char *file)
   scanf("%d", &start);
   printf("The shortest distances of the nodes from the node %d are as follows:\n\n", start);
   Dijkstra(g, start);
+  printf("Matrix representation : \n");
+  DisplayMatrix(g);
   return;
 }

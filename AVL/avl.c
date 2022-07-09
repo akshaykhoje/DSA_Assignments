@@ -2,11 +2,13 @@
 #include <stdlib.h>
 #include "avl.h"
 
+
 void init_avl(avl_node *t)
 {
   *t = NULL;
   return;
 }
+
 
 void insert(avl_node *t, int n)
 {
@@ -41,7 +43,7 @@ void insert(avl_node *t, int n)
   else
     q->right = nn;
 
-  reassign_bf(q);
+  reassign_bf(q);     // reassign the balance factor of q
 
   avl_node unbal = NULL;
   unbal = imbalanced_node(q);

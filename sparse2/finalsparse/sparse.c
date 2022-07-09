@@ -3,7 +3,6 @@
 #include "sparse.h"
 void createmat(sparse **m, node **r, node **c, int rw_n, int cl_n, int data);
 
-
 void getmatrix(sparse **curr, int r, int c)
 {
     sparse *s = *curr;
@@ -21,8 +20,6 @@ void getmatrix(sparse **curr, int r, int c)
         s->col[i] = NULL;
     }
 }
-
-
 void init(sparse *s, char *filename)
 {
 
@@ -51,8 +48,7 @@ void init(sparse *s, char *filename)
     // sparse* curr=s;
     node *curr = s->row[0];
     node *docur = s->col[0];
-    
-    for (int i = 0; i < s->rw; i++)//inserting non-zero values in rows
+    for (int i = 0; i < s->rw; i++)
     {
         curr = s->row[i];
         for (int j = 0; j < s->cl; j++)
@@ -63,7 +59,7 @@ void init(sparse *s, char *filename)
             // printf("%d ",x);
             if (x)
             {
-                createmat(&s, &curr, &docur, i, j, x);      
+                createmat(&s, &curr, &docur, i, j, x);
             }
         }
         // printf("\n");
@@ -79,7 +75,6 @@ void init(sparse *s, char *filename)
     // }
 }
 
-
 void createmat(sparse **m, node **r, node **c, int rw_n, int cl_n, int data)
 {
     // formation ofnew matrix
@@ -91,22 +86,20 @@ void createmat(sparse **m, node **r, node **c, int rw_n, int cl_n, int data)
     newnode->col = cl_n;
     newnode->value = data;
     newnode->right = newnode->down = NULL;
-
     if (rm == NULL)
     {
-        m3->row[rw_n] = newnode;     
+        m3->row[rw_n] = newnode;
         rm = m3->row[rw_n];
     }
     else
     {
-        while (rm->right != NULL)   //traversing till the end of the row
+        while (rm->right != NULL)
         {
             rm = rm->right;
         }
         rm->right = newnode;
     }
 
-    // inserting in a column
     if (cm == NULL)
     {
         m3->col[cl_n] = newnode;
@@ -125,8 +118,6 @@ void createmat(sparse **m, node **r, node **c, int rw_n, int cl_n, int data)
     *r = rm;
     *c = cm;
 }
-
-
 sparse *sparseadd(sparse *m1, sparse *m2)
 {
     if (!m1 || !m2)
@@ -152,12 +143,12 @@ sparse *sparseadd(sparse *m1, sparse *m2)
     node *cm;
 
     node *p1, *p2, *q1, *q2;
-    for (int i = 0; i < m1->rw; i++)     //iterating rows
+    for (int i = 0; i < m1->rw; i++)
     {
         p1 = m1->row[i];
         p2 = m2->row[i];
         rm = m3->row[i];
-        for (int j = 0; j < m1->cl; j++)       //iterating columns
+        for (int j = 0; j < m1->cl; j++)
         {
             int data, rw_n, cl_n;
 
@@ -215,7 +206,6 @@ sparse *sparseadd(sparse *m1, sparse *m2)
     return m3;
 }
 
-
 void printmat(sparse *m)
 {
     sparse *curr = m;
@@ -258,7 +248,6 @@ void printmat(sparse *m)
         printf("\n");
     }
 }
-
 
 // here is the code of the multiplication of matrices ;
 // check first the column of first matrix equals to row of second matrix or not
@@ -334,7 +323,6 @@ sparse *multimatrices(sparse *m1, sparse *m2)
     return m3;
 }
 
-
 sparse *transpose(sparse *m1)
 {
     if (!m1)
@@ -344,56 +332,48 @@ sparse *transpose(sparse *m1)
     int r = m1->rw;
     int c = m1->cl;
     sparse *m3;
-    m3 = (sparse *)malloc(sizeof(sparse));
+    m3=(sparse*)malloc(sizeof(sparse));
     getmatrix(&m3, c, r);
     node *p, *q;
-    node *rm, *cm;
+    node *rm,*cm;
     for (int i = 0; i < r; i++)
     {
         p = m1->row[i];
-        if (p)
-            rm = m3->col[p->row];
+        if(p)
+            rm=m3->col[p->row];
         else
             continue;
         for (int j = 0; j < c; j++)
         {
-            if (p)
-            {
-                cm = m3->row[p->col];
-                node *newnode = (node *)malloc(sizeof(node));
-                newnode->col = p->row;
-                newnode->row = p->col;
-                newnode->value = p->value;
-                if (!cm)
-                {
-                    m3->row[p->col] = newnode;
+            if(p){
+                cm=m3->row[p->col];
+                node* newnode=(node*)malloc(sizeof(node));
+                newnode->col=p->row;
+                newnode->row=p->col;
+                newnode->value=p->value;
+                if(!cm){
+                    m3->row[p->col]=newnode;
                 }
-                else
-                {
-                    while (cm->right != NULL)
-                    {
-                        cm = cm->right;
+                else{
+                    while(cm->right!=NULL){
+                        cm=cm->right;
                     }
-                    cm->right = newnode;
+                    cm->right=newnode;
                 }
 
-                if (!rm)
-                {
-                    m3->col[p->row] = newnode;
+                if(!rm){
+                    m3->col[p->row]=newnode;
                 }
-                else
-                {
-                    while (rm->down != NULL)
-                    {
-                        rm = rm->down;
+                else{
+                    while(rm->down!=NULL){
+                        rm=rm->down;
                     }
-                    rm->down = newnode;
+                    rm->down=newnode;
                 }
-
-                p = p->right;
+                
+                p=p->right;
             }
-            else
-            {
+            else{
                 break;
             }
         }

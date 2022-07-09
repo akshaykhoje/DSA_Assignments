@@ -18,6 +18,7 @@ typedef struct edge {
 
 void init_graph(graph *, char *file);
 void display_list(graph);
+void DisplayMatrix(graph g);
 void BFS(graph, int);
 void DFS(graph, int);
 int out_degree(graph, int);

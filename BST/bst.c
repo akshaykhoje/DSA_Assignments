@@ -4,11 +4,13 @@
 
 node *min_value_node(BST t);
 
+
 void init_bst(BST *t)
 {
   *t = NULL;
   return;
 }
+
 
 void insert_node(BST *t, int x)
 {
@@ -32,6 +34,7 @@ void insert_node(BST *t, int x)
     return;
   return;
 }
+
 
 node *remove_node(BST *t, int d)
 {
@@ -76,6 +79,7 @@ node *remove_node(BST *t, int d)
   }
   return temp;
 }
+
 
 void remove_node_iterative(BST *t, int d)
 {
@@ -184,6 +188,7 @@ void remove_node_iterative(BST *t, int d)
   return;
 }
 
+
 node *search(BST t, int d)
 {
   node *temp = t;
@@ -200,6 +205,7 @@ node *search(BST t, int d)
     search(temp->left, d);
 }
 
+
 void inorder(BST t)
 {
   if (!t)
@@ -209,6 +215,7 @@ void inorder(BST t)
   printf("%d ", t->data);
   inorder(t->right);
 }
+
 
 void preorder(BST t)
 {
@@ -220,6 +227,7 @@ void preorder(BST t)
   preorder(t->right);
 }
 
+
 void postorder(BST t)
 {
   if (!t)
@@ -230,16 +238,17 @@ void postorder(BST t)
   printf("%d ", t->data);
 }
 
-node *min_value_node(BST t)
+
+node *min_value_node(BST t)   
 {
   node *curr = t;
-
   while (curr && curr->left != NULL)
   {
     curr = curr->left;
   }
   return curr;
 }
+
 
 int max_depth(BST t) // DFS
 {
@@ -256,6 +265,7 @@ int max_depth(BST t) // DFS
 
   return 0;
 }
+
 
 void display_level(BST t, int level)
 {
