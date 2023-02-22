@@ -4,11 +4,6 @@
 #include "heap.h"
 #include "heapify.h"
 
-/*
-    Name: Rohit Magar
-    MIS: 112003079
-    Q. Heap sort using ADT heap, input is scanned from a file
-*/
 
 
 int main(int argc, char* argv[]){
