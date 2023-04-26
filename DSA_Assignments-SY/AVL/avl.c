@@ -58,9 +58,9 @@ void insert(avl_node *t, int n)
       LL_rotation(t, &unbal);
     else if (unbal->bf == 2 && unbal->left->bf == -1)
       LR_rotation(t, &unbal);
-    else if (unbal->bf == -2 && unbal->right->bf == 1)
+    else if (unbal->bf == 2 && unbal->right->bf == 1)
       RR_rotation(t, &unbal);
-    else if (unbal->bf == -2 && unbal->right->bf == -1)
+    else if (unbal->bf == 2 && unbal->right->bf == -1)
       RL_rotation(t, &unbal);
 
     reassign_bf(parent_of_unbal);
