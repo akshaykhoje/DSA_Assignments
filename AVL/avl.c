@@ -136,6 +136,11 @@ void LL_rotation(avl_node *t, avl_node *n)
   }
   else
     B->parent->right = B;
+    // A->right=B->parent;
+    // B->parent->left=NULL;
+    // B->parent=B->parent->parent;
+    // A->right->parent=A;
+    
   return;
 }
 
@@ -144,6 +149,8 @@ void RR_rotation(avl_node *t, avl_node *n)
 {
   avl_node A = (*n);
   avl_node B = ((*n)->right);
+  if (!B)
+    return;
   avl_node BL = B->left;
   B->left = A;
   A->right = BL;
