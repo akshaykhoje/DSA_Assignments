@@ -59,9 +59,9 @@ void insert(avl_node *t, int n)
     else if (unbal->bf == 2 && unbal->left->bf == -1)
       LR_rotation(t, &unbal);
     else if (unbal->bf == -2 && unbal->right->bf == 1)
-      RR_rotation(t, &unbal);
-    else if (unbal->bf == -2 && unbal->right->bf == -1)
       RL_rotation(t, &unbal);
+    else if (unbal->bf == -2 && unbal->right->bf == -1)
+      RR_rotation(t, &unbal);
 
     reassign_bf(parent_of_unbal);
     unbal = imbalanced_node(parent_of_unbal);
@@ -198,3 +198,11 @@ void inorder(avl_node t)
 
 
 
+void preorder(avl_node t){
+  if (!t)
+    return;
+
+  printf("Data : %d, bf : %d \n", t->data, t->bf);
+  preorder(t->left);
+  preorder(t->right);
+}

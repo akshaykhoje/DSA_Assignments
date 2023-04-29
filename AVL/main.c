@@ -31,6 +31,7 @@ int main()
   insert(&root, 84); 
 
   printf("\nInorder\n");
-  inorder(root);
+  // inorder(root);
+  preorder(root);
   return 0;
 }

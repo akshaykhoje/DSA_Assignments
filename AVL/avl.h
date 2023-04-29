@@ -17,3 +17,4 @@ avl_node imbalanced_node(avl_node);
 void reassign_bf(avl_node);
 
 void inorder(avl_node);
+void preorder(avl_node);
