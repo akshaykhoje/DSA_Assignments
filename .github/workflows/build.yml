@@ -14,10 +14,10 @@ jobs:
       run: sudo apt-get install build-essential
     
     - name: Build program
-      run: gcc -o myprogram myprogram.c
+      run: gcc -o avl AVL/avl.c
     
     - name: Run program
-      run: ./myprogram
+      run: ./avl
     
     - name: Check program output
       run: |
